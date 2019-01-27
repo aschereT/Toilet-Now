@@ -1,0 +1,37 @@
+[
+    {
+        "name": "LSC",
+        "latitude": 49.262543,
+        "longitude": -123.245504,
+        "gender": "MALE",
+        "status": "FREE"
+    },
+    {
+        "name": "PHARM",
+        "latitude": 49.262445,
+        "longitude": -123.243247,
+        "gender": "FEMALE",
+        "status": "FREE"
+    },
+    {
+        "name": "BOOK",
+        "latitude": 49.265090,
+        "longitude": -123.250580,
+        "gender": "MALE",
+        "status": "FREE"
+    },
+    {
+        "name": "MCLD",
+        "latitude": 49.261641,
+        "longitude": -123.249415,
+        "gender": "MALE",
+        "status": "FREE"
+    },
+    {
+        "name": "ICICS",
+        "latitude": 49.261200,
+        "longitude": -123.248844,
+        "gender": "MALE",
+        "status": "FREE"
+    }
+]
