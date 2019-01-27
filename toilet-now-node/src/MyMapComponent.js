@@ -16,7 +16,13 @@ function deg2rad(deg) {
 }
 
 function GetDirections(toilat, toilng, curlat, curlng){
-  
+  // const DS = new google.maps.DirectionsService();
+
+  // DS.route({
+  //   origin: new google.maps.LatLng(curlat, curlng),
+  //   destination: new google.maps.LatLng(toilat, toilng),
+  //   travelMode: google.maps.TravelMode.WALKING
+  // })
 }
 
 const MyMapComponent = compose(
