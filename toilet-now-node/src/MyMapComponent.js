@@ -6,7 +6,7 @@ const MyMapComponent = compose(
     withProps({
       googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAeDHMR-tD21TLn7jwgxndy3sSdgICW48g&libraries=geometry,drawing,places",
       loadingElement: <div style={{ height: `100%` }} />,
-      containerElement: <div style={{ height: `400px` }} />,
+      containerElement: <div style={{ height: `500px` }} />,
       mapElement: <div style={{ height: `100%` }} />,
     }),
     withStateHandlers(
@@ -32,17 +32,17 @@ const MyMapComponent = compose(
       defaultCenter={ubc_pos}
     >
     {props.isMarkerShown && 
-      <Marker 
-          position = {{ lat: props.currentLocation.lat, lng: props.currentLocation.lng }}
-      >
-      </Marker>
-      && props.sqlplaces &&
+        props.sqlplaces &&
         props.sqlplaces.map((toilet, i) => {
-          //console.log(toilet.name);
+          console.log(toilet);
           let toiletlat = parseFloat(toilet.latitude, 10);
           let toiletlng = parseFloat(toilet.longitude, 10);
+          let toilettotvote = parseFloat(toilet.rating_s, 5);
+          let toiletnumvote = parseFloat(toilet.rating_v, 5);
+          let toiletrating = toilettotvote/toiletnumvote;
           return (
-            <Marker key={i}
+            <Marker 
+              key={i}
               position = {{lat: toiletlat, lng: toiletlng}}
               onClick = {props.onToggleOpen.bind(this, i)}
             >
@@ -50,6 +50,7 @@ const MyMapComponent = compose(
               <infoWindow onCloseClick={props.onToggleOpen.bind(i)}>
                 <div>Location: {toilet.name}</div>
                 <div>Genders: {toilet.extra}</div>
+                <div>Rating: {toiletrating}</div>
               </infoWindow>
             )}
             </Marker>
