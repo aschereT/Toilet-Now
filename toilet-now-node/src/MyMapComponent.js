@@ -15,6 +15,16 @@ function deg2rad(deg){
   return deg*(Math.PI/180);
 }
 
+function GetDirections(toilat, toilng, curlat, curlng){
+  // const DS = new google.maps.DirectionsService();
+ 
+  // DS.route({
+  //   origin: new google.maps.LatLng(curlat, curlng),
+  //   destination: new google.maps.LatLng(toilat, toilng),
+  //   travelMode: google.maps.TravelMode.WALKING
+  // })
+ }
+
 const MyMapComponent = compose(
     withProps({
       googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAeDHMR-tD21TLn7jwgxndy3sSdgICW48g&libraries=geometry,drawing,places",
@@ -75,18 +85,24 @@ const MyMapComponent = compose(
           //onClick shows details of the marker
           //name, toilet gender(s), average rating, and distance
           return (
-            <Marker 
-              key={i}
-              position = {{lat: toiletlat, lng: toiletlng}}
-              onClick = {props.onToggleOpen.bind(this, i)}
-              title={toilet.name}
-            >
-            {props.infoWindows[i].isOpen && (
-              <InfoWindow closeclick={props.onToggleOpen.bind(i)}>
-              <div><div>Location: {toilet.name}</div><div class="notcurrloc">Genders: {toilet.extra}</div><div class="notcurrloc">Rating: {toiletrating}</div><div class="notcurrloc">Distance: {toiletdistance} Meters</div></div>
-              </InfoWindow>
-            )}
-            </Marker>
+            <Marker
+           key={i}
+           position={{ lat: toiletlat, lng: toiletlng }}
+           onClick={props.onToggleOpen.bind(this, i)}
+           title={toilet.name}
+         >
+           {props.infoWindows[i].isOpen && (
+             <InfoWindow closeclick={props.onToggleOpen.bind(i)}>
+               <div>
+                 <div>Location: {toilet.name}</div>
+                 <div className="notcurrloc">Genders: {toilet.extra}</div>
+                 <div className="notcurrloc">Rating: {toiletrating}</div>
+                 <div className="notcurrloc">Distance: {toiletdistance} Meters</div>
+                 <button onClick={GetDirections(toiletlat, toiletlng, props.currentLocation.lat, props.currentLocation.lng)}>Get Directions</button>
+               </div>
+             </InfoWindow>
+           )}
+         </Marker>
           );
         })
       }

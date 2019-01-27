@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ineed2gologo from './i need 2 go.png';
+import ineed2gologo from './i_need_2_go.png';
 import './App.css';
 import MyMapComponent from './MyMapComponent.js'
 import places from "./places.json"
@@ -142,7 +142,7 @@ getToilets = async (lat, lon, range) => {
         <div className="App">
           <header className="App-header">
             <img src={ineed2gologo} className="App-logo" alt="logo" />
-            <p>
+            <p class="slogan">
               Your #1 app for your #2 needs
             </p>
           </header>
@@ -153,6 +153,7 @@ getToilets = async (lat, lon, range) => {
             places = {places}
             sqlplaces = {this.state.sqldata}
           />
+          <div className="lowerbackground"></div>
         </div>
       );
     }
