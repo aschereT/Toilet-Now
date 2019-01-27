@@ -1,0 +1,14 @@
+{
+  "name": "tn-backend",
+  "version": "1.0.0",
+  "description": "The backend component of toilet-now, this handles queries to our databases",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mssql": "^4.3.0"
+  }
+}
