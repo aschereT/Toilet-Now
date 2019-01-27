@@ -1,59 +1,68 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import ineed2gologo from './i need 2 go.png';
 import './App.css';
-
 import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import MyMapComponent from './MyMapComponent.js'
 
-const MyMapComponent = compose(
-  withProps({
-    googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAeDHMR-tD21TLn7jwgxndy3sSdgICW48g&libraries=geometry,drawing,places",
-    loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100%` }} />,
-  }),
-  withScriptjs,
-  withGoogleMap
-)((props) =>
-  <GoogleMap
-    defaultZoom={14}
-    defaultCenter={ubc_pos}
-  >
-    {props.isMarkerShown && <Marker position={ubc_pos} />}
-  </GoogleMap>
-)
+class App extends Component {  constructor(props){
+  super(props)
+  
+}
+state = {
+  currentLatLng: {
+    lat: 0,
+    lng: 0
+  },
+  isMarkerShown: false
+}
+componentWillUpdate(props){
+  this.getGeoLocation()
+}
 
-const ubc_pos = { lat: 49.2606, lng: -123.2460 };
+componentDidMount(props) {
+  this.delayedShowMarker()
+}
 
-class App extends Component {
+delayedShowMarker = (props) => {
+  setTimeout(() => {
+    this.getGeoLocation()
+    //this.setState({ isMarkerShown: true })
+  }, 1000)
+}
+
+handleMarkerClick = (props) => {
+  this.setState({ isMarkerShown: false })
+  this.delayedShowMarker()
+}
+
+getGeoLocation = (props) => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        this.setState({
+            currentLatlng: {lat: latitude, lng: longitude},
+            isMarkerShown: true
+          }
+        )
+      }
+    )
+  } else {
+    //error => console.log(error)
+  }
+}
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          <img src={ineed2gologo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
             <p>Click the button to get your location, and we'll do the rest!.</p>
             <button onclick="getLocation()">CLICK ME</button>
           </p>
-          
-          <script>
-            var x = document.getElementById("demo");
-
-            function getLocation() {
-                if (navigator.geolocation) {
-                  navigator.geolocation.getCurrentPosition(showPosition);
-                } else { 
-                x.innerHTML = "Geolocation is not supported by this browser.";
-                }
-            }
-
-            function showPosition(position) {
-              x.innerHTML = "Latitude: " + position.coords.latitude + 
-              "<br>Longitude: " + position.coords.longitude;
-            }
-          </script>
-
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -63,7 +72,11 @@ class App extends Component {
             Toilet Now!
           </a>
         </header>
-        <MyMapComponent isMarkerShown />
+        <MyMapComponent 
+          isMarkerShown={this.state.isMarkerShown}
+          onMarkerClick={this.handleMarkerClick}
+          currentLocation={this.state.currentLatlng}
+        />
       </div>
     );
   }
