@@ -126,6 +126,7 @@ getGeoLocation = (props, callback) => {
 getToilets = async (lat, lon, range) => {
   const response = await fetch('http://toilet-now.com:3001/api/getToilets', {
     method: 'GET',
+    mode: 'no-cors',
     headers: {
       'Content-Type': 'application/json',
     }
