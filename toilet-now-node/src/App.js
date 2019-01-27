@@ -22,7 +22,10 @@ componentWillUpdate(props){
 }
 
 componentDidMount(props) {
-  this.delayedShowMarker()
+  this.delayedShowMarker();
+  this.getToilets(0,0,0).then(body => {
+    console.log("Called backend API, got ", JSON.stringify(body));
+  })
 }
 
 delayedShowMarker = (props) => {
@@ -53,6 +56,18 @@ getGeoLocation = (props) => {
     //error => console.log(error)
   }
 }
+
+
+//Calls the backend API
+//Given a latlon position and range, returns all toilets
+//that are within range metres of the latlon
+getToilets = async (lat, lon, range) => {
+  const response = await fetch('/api/getToilets');
+  const body = await response.json();
+  if (response.status !== 200) throw Error(body.message);
+  return body;
+};
+
   render() {
     return (
       <div className="App">
