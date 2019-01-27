@@ -11,7 +11,7 @@ const MyMapComponent = compose(
     }),
     withStateHandlers(
       props => ({
-        infoWindows: props.places.map(p => {
+        infoWindows: props.sqlplaces.map(p => {
           return { isOpen: false };
         })
       }),
@@ -38,14 +38,20 @@ const MyMapComponent = compose(
       </Marker>
       && props.sqlplaces &&
         props.sqlplaces.map((toilet, i) => {
-          console.log(toilet.name);
+          //console.log(toilet.name);
           let toiletlat = parseFloat(toilet.latitude, 10);
           let toiletlng = parseFloat(toilet.longitude, 10);
           return (
-            <Marker
+            <Marker key={i}
               position = {{lat: toiletlat, lng: toiletlng}}
               onClick = {props.onToggleOpen.bind(this, i)}
             >
+            {props.infoWindows[i].isOpen && (
+              <infoWindow onCloseClick={props.onToggleOpen.bind(i)}>
+                <div>Location: {toilet.name}</div>
+                <div>Genders: {toilet.extra}</div>
+              </infoWindow>
+            )}
             </Marker>
           );
         })

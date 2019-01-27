@@ -14,21 +14,24 @@ state = {
     lng: 0
   },
   isMarkerShown: false,
-  sqlbody: ""
+  sqlbody: "",
+  loading: true
 }
 
 componentWillUpdate(props){
   this.getGeoLocation()
 }
 
-componentDidMount(props) {
-  this.getToilets(0,0,0).then(body => {
-    console.log("Called backend API, got ", body);
-    //console.log("Called backend API, got ", JSON.stringify(body));
+async componentDidMount(props) {
+  // this.getToilets(0,0,0).then(body => {
+  //   console.log("Called backend API, got ", body);
+  //   //console.log("Called backend API, got ", JSON.stringify(body));
 
-    this.state.sqlbody = body.data;
-    console.log("sqlbody has", this.state.sqlbody);
-  })
+  //   this.state.sqlbody = body.data;
+  //   console.log("sqlbody has", this.state.sqlbody);
+  // })
+  this.state.sqlbody = await this.getToilets(0,0,0);
+  this.state.loading = false;
   this.delayedShowMarker();
 }
 
@@ -74,33 +77,58 @@ getToilets = async (lat, lon, range) => {
 };
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={ineed2gologo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-            <p>Click the button to get your location, and we'll do the rest!.</p>
-            <button onclick="getLocation()">CLICK ME</button>
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Toilet Now!
-          </a>
-        </header>
-        <MyMapComponent 
-          isMarkerShown={this.state.isMarkerShown}
-          onMarkerClick={this.handleMarkerClick}
-          currentLocation={this.state.currentLatlng}
-          places = {places}
-          sqlplaces = {this.state.sqlbody}
-        />
-      </div>
-    );
+    if(!this.state.loading)
+    {
+      return (
+        <div className="App">
+          <header className="App-header">
+            <img src={ineed2gologo} className="App-logo" alt="logo" />
+            <p>
+              Edit <code>src/App.js</code> and save to reload.
+              <p>Click the button to get your location, and we'll do the rest!.</p>
+              <button onClick="getLocation()">CLICK ME</button>
+            </p>
+            <a
+              className="App-link"
+              href="https://reactjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Toilet Now!
+            </a>
+          </header>
+          <MyMapComponent 
+            isMarkerShown={this.state.isMarkerShown}
+            onMarkerClick={this.handleMarkerClick}
+            currentLocation={this.state.currentLatlng}
+            places = {places}
+            sqlplaces = {this.state.sqlbody.data}
+          />
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className="App">
+          <header className="App-header">
+            <img src={ineed2gologo} className="App-logo" alt="logo" />
+            <p>
+              Edit <code>src/App.js</code> and save to reload.
+              <p>Click the button to get your location, and we'll do the rest!.</p>
+              <button onClick="getLocation()">CLICK ME</button>
+            </p>
+            <a
+              className="App-link"
+              href="https://reactjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Toilet Now!
+            </a>
+          </header>
+          </div>
+      )
+    }
   }
 }
 export default App;
