@@ -120,11 +120,13 @@ getGeoLocation = (props, callback) => {
   //})
 }
 
+api_site = "http://localhost:3001"
+
 //Calls the backend API
 //Given a latlon position and range, returns all toilets
 //that are within range metres of the latlon
 getToilets = async (lat, lon, range) => {
-  const response = await fetch('/api/getToilets', {
+  const response = await fetch(api_site +'/api/getToilets', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
