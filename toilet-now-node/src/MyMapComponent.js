@@ -79,14 +79,12 @@ const MyMapComponent = compose(
               key={i}
               position = {{lat: toiletlat, lng: toiletlng}}
               onClick = {props.onToggleOpen.bind(this, i)}
+              title={toilet.name}
             >
             {props.infoWindows[i].isOpen && (
-              <infoWindow onCloseClick={props.onToggleOpen.bind(i)}>
-                <div>Location: {toilet.name}</div>
-                <div class="notcurrloc">Genders: {toilet.extra}</div>
-                <div class="notcurrloc">Rating: {toiletrating}</div>
-                <div class="notcurrloc">Distance: {toiletdistance} Meters</div>
-              </infoWindow>
+              <InfoWindow closeclick={props.onToggleOpen.bind(i)}>
+              <div><div>Location: {toilet.name}</div><div class="notcurrloc">Genders: {toilet.extra}</div><div class="notcurrloc">Rating: {toiletrating}</div><div class="notcurrloc">Distance: {toiletdistance} Meters</div></div>
+              </InfoWindow>
             )}
             </Marker>
           );

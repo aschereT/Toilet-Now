@@ -15,8 +15,8 @@ class App extends Component {
 
 state = {
   currentLatLng: {
-    lat: 49.262259,
-    lng: -123.245229
+    lat: 0,
+    lng: 0
   },
   isMarkerShown: false,
   sqlbody: null,
