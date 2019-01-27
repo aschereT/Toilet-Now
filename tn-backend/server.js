@@ -33,18 +33,19 @@ sql.connect(config).then(pool => {
     // this is our get method
     // this method fetches all available data in our database
     router.get("/getToilets", (req, res) => {
-        //const { lat, lon, range } = req.body;
+        const { lat, lon, range } = req.body;
+        console.log("Lat is " + lat + ", lon is " + lon + ", range is " + range)
         //included in the body are 3 parameters: latlon of user, and range they want
         //this server-side function then queries database to find the toilets near the user
         //and send it back to the client
         //TODO: actually filter
-        console.log("Received connection")
-        try {
-            const result = pool.request().query(`select * from toilets where id = ${value}`);
-            return res.json({ success: true, data: result });
-        } catch (err) {
+        const result = pool.request().query(`select * from toilets`).then(result => {
+            console.log("Result from DB is " + result.recordsets)
+            return res.json({ success: true, data: result.recordsets });
+        }).catch(err => {
+            console.log("Failed to query database, " + err)
             return res.json({ success: false, error: err });
-        }
+        })
     });
 
     // append /api for our http requests
