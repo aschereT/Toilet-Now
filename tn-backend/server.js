@@ -3,46 +3,58 @@ const sql = require('mssql')
 const express = require("express");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
-const Data = require("./data");
 
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
 
 // this is our MS SQL database
-const dbRoute = "sqlserver://ubcwashrooms:<pass>@ubcwashrooms.database.windows.net:1433/ubcwashrooms";
+//const dbRoute = "sqlserver://ubcwashrooms:Password1@ubcwashrooms.database.windows.net:1433/ubcwashrooms?encrypt=true";
 
-// connects our back end code with the database
-mongoose.connect(
-  dbRoute,
-  { useNewUrlParser: true }
-);
+const config = {
+    user: 'ubcwashrooms',
+    password: 'Password1',
+    server: 'ubcwashrooms.database.windows.net',
+    database: 'ubcwashrooms',
+    port: 1433,
+    encrypt: true,
+    pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+    }
+}
 
-//let db = mongoose.connection;
+sql.connect(config).then(pool => {
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
+    app.use(logger("dev"));
 
-db.once("open", () => console.log("connected to the database"));
+    // this is our get method
+    // this method fetches all available data in our database
+    router.get("/getToilets", (req, res) => {
+        //const { lat, lon, range } = req.body;
+        //included in the body are 3 parameters: latlon of user, and range they want
+        //this server-side function then queries database to find the toilets near the user
+        //and send it back to the client
+        //TODO: actually filter
+        console.log("Received connection")
+        try {
+            const result = pool.request().query(`select * from toilets where id = ${value}`);
+            return res.json({ success: true, data: result });
+        } catch (err) {
+            return res.json({ success: false, error: err });
+        }
+    });
 
-// checks if connection with the database is successful
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
+    // append /api for our http requests
+    app.use("/api", router);
 
-// (optional) only made for logging and
-// bodyParser, parses the request body to be a readable json format
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(logger("dev"));
+    // launch our backend into a port
+    app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+}).catch(err => {
+    // ... error checks
+    console.log("Failed to connect to database, please restart app")
+    console.log("Error is " + err)
+})
 
-// this is our get method
-// this method fetches all available data in our database
-router.get("/getToilets", (req, res) => {
-    const {lat, lon, range} = req.body;
-//   Data.find((err, data) => {
-//     if (err) return res.json({ success: false, error: err });
-//     return res.json({ success: true, data: data });
-//   });
-});
-
-// append /api for our http requests
-app.use("/api", router);
-
-// launch our backend into a port
-app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
