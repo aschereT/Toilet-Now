@@ -8,13 +8,10 @@ import { SSL_OP_EPHEMERAL_RSA } from 'constants';
 class App extends Component {
   constructor(props){
   super(props)
-  
 }
 //
 //lat: 49.262259,
 //lng: -123.245229
-
-
 
 state = {
   currentLatLng: {
@@ -24,15 +21,17 @@ state = {
   isMarkerShown: false,
   sqlbody: null,
   sqldata: null,
-  loading: true,
-  currentloading: true
+  loading: true
 }
 
+//componentWillUpdate is called in the background multiple times
+//to update the user's current location
 componentWillUpdate(props){
   this.getGeoLocation()
 }
 
-
+//componentDidMount waits for SQL query and data retrieval
+//then calls delayedShowMarker with callback for finishload function
 async componentDidMount(props) {
   // this.getToilets(0,0,0).then(body => {
   //   console.log("Called backend API, got ", body);
@@ -43,13 +42,16 @@ async componentDidMount(props) {
   // })
   this.state.sqlbody = await this.getToilets(0,0,0);
   this.delayedShowMarker(this, this.finishload);
-  console.log(this.state.currentLatLng.lat);
-  console.log(this.state.currentLatLng.lng);
+  //console.log(this.state.currentLatLng.lat);
+  //console.log(this.state.currentLatLng.lng);
 }
 
+//finishload sets the states of isMarkerShown and loading
+//final step of setup, map places markers after loading becomes false
+//calls the callback function if passed
 finishload = (props, callback) => {
   console.log("finishload");
-  console.log(this.state.sqldata);
+  //console.log(this.state.sqldata);
     this.setState({
       isMarkerShown: true,
       loading: false
@@ -58,6 +60,9 @@ finishload = (props, callback) => {
     callback();
 }
 
+//delayedShowMarker calls the getGeoLocation function to get current location of user
+//gives callback function to append current location to end of array for map marker
+//calls the callback function if passed
 delayedShowMarker = (props, callback) => {
   this.getGeoLocation(this, this.makenewlist);
   console.log("delaymarker");
@@ -65,9 +70,11 @@ delayedShowMarker = (props, callback) => {
     callback();
 }
 
+//makenewlist takes geo location and creates new item then appends to array of nearby markers
+//calls the callback function if passed
 makenewlist = (props, callback) => {
-  console.log("here");
-  console.log(this.state.sqlbody);
+  console.log("makenewlist");
+  //console.log(this.state.sqlbody);
   var item = {"ToiletID":"0","latitude":this.state.currentLatLng.lat,"longitude":this.state.currentLatLng.lng,"rating_s":"0","rating_v":"1","extra":"","name":"CURRENT LOCATION"};
   this.setState({
     sqldata: [
@@ -85,6 +92,9 @@ handleMarkerClick = (props) => {
   this.delayedShowMarker()
 }
 
+//getGeoLocation navigates Google Maps API and retrieves the devices' current location on google maps
+//function takes the latitude and longitude and saves to the state
+//calls the callback function if passed
 getGeoLocation = (props, callback) => { 
   //let promise1 = new Promise(function (resolve, reject) {
     if (navigator.geolocation) {
@@ -139,7 +149,7 @@ getToilets = async (lat, lon, range) => {
           <MyMapComponent 
             isMarkerShown={this.state.isMarkerShown}
             onMarkerClick={this.handleMarkerClick}
-            currentLocation={this.state.currentLatlng}
+            currentLocation={this.state.currentLatLng}
             places = {places}
             sqlplaces = {this.state.sqldata}
           />

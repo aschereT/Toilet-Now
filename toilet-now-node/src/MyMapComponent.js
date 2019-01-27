@@ -7,9 +7,10 @@ var distance = require ('google-distance-matrix');
 
 distance.key('AIzaSyAeDHMR-tD21TLn7jwgxndy3sSdgICW48g');
 distance.units('imperial');
-var origin = ["49.262259,-123.245229"];
-var originmath = [49.262259,-123.245229];
+var originstr = ["49.262259,-123.245229"];
+var originnum = [49.262259,-123.245229];
 
+//function to convert from degrees to radians
 function deg2rad(deg){
   return deg*(Math.PI/180);
 }
@@ -18,7 +19,7 @@ const MyMapComponent = compose(
     withProps({
       googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAeDHMR-tD21TLn7jwgxndy3sSdgICW48g&libraries=geometry,drawing,places",
       loadingElement: <div style={{ height: `100%` }} />,
-      containerElement: <div style={{ height: `500px` }} />,
+      containerElement: <div style={{ height: `600px` }} />,
       mapElement: <div style={{ height: `100%` }} />,
     }),
     withStateHandlers(
@@ -40,30 +41,39 @@ const MyMapComponent = compose(
     withGoogleMap
   )((props) =>
     <GoogleMap
-      defaultZoom={14}
+      defaultZoom={15}
       defaultCenter={ubc_pos}
     >
     {props.isMarkerShown && 
         props.sqlplaces &&
         props.sqlplaces.map((toilet, i) => {
+          //toiletlat stores latitude of the toilet
+          //toiletlng stores longitude of the toilet
+          //toilettotvote stores total vote score of the toilet
+          //toiletnumvote stores number of votes of the toilet
           let toiletlat = parseFloat(toilet.latitude, 10);
           let toiletlng = parseFloat(toilet.longitude, 10);
           let toilettotvote = parseFloat(toilet.rating_s, 5);
           let toiletnumvote = parseFloat(toilet.rating_v, 5);
+
+          //toiletrating calculates the average score of the toilet
+          //toiletdistance calculates the distance of the toilet from the user's current location
           let toiletrating = (toilettotvote/toiletnumvote).toFixed(2);
           let toiletloc = [toiletlat.toString() + ","+toiletlng.toString()]
           var R = 6371e3;
-          var dLat = deg2rad(toiletlat - originmath[0]);
-          var dLon = deg2rad(toiletlng - originmath[1]);
+          var dLat = deg2rad(toiletlat - originnum[0]);
+          var dLon = deg2rad(toiletlng - originnum[1]);
           var a = 
           Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(deg2rad(originmath[0])) * Math.cos(deg2rad(toiletlat)) * 
+          Math.cos(deg2rad(originnum[0])) * Math.cos(deg2rad(toiletlat)) * 
           Math.sin(dLon/2) * Math.sin(dLon/2)
           ; 
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var toiletdistance = (R * c).toFixed(2);
           
-
+          //print markers on map, positining the marker using lat and lng
+          //onClick shows details of the marker
+          //name, toilet gender(s), average rating, and distance
           return (
             <Marker 
               key={i}
@@ -73,9 +83,7 @@ const MyMapComponent = compose(
             {props.infoWindows[i].isOpen && (
               <infoWindow onCloseClick={props.onToggleOpen.bind(i)}>
                 <div>Location: {toilet.name}</div>
-                <div class="notcurrloc">
-                Genders: {toilet.extra}
-                </div>
+                <div class="notcurrloc">Genders: {toilet.extra}</div>
                 <div class="notcurrloc">Rating: {toiletrating}</div>
                 <div class="notcurrloc">Distance: {toiletdistance} Meters</div>
               </infoWindow>
