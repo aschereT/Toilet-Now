@@ -45,7 +45,7 @@ sql.connect(config).then(pool => {
         //TODO: actually filter
         const result = pool.request().query(`select * from toilets`).then(result => {
             //console.log("Result from DB is " + result.recordsets)
-            return res.json({ success: true, data: result.recordsets[0] });
+            return res.set('X-Content-Type-Options', 'nosniff').json({ success: true, data: result.recordsets[0] });
         }).catch(err => {
             console.log("Failed to query database, " + err)
             return res.json({ success: false, error: err });
