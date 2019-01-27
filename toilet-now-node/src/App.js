@@ -62,7 +62,13 @@ getGeoLocation = (props) => {
 //Given a latlon position and range, returns all toilets
 //that are within range metres of the latlon
 getToilets = async (lat, lon, range) => {
-  const response = await fetch('/api/getToilets');
+  const response = await fetch('/api/getToilets', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ lat: lat, lon: lon, range: range }),
+  });
   const body = await response.json();
   if (response.status !== 200) throw Error(body.message);
   return body;
