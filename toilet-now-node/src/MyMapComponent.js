@@ -34,12 +34,11 @@ const MyMapComponent = compose(
     {props.isMarkerShown && 
         props.sqlplaces &&
         props.sqlplaces.map((toilet, i) => {
-          console.log(toilet);
           let toiletlat = parseFloat(toilet.latitude, 10);
           let toiletlng = parseFloat(toilet.longitude, 10);
           let toilettotvote = parseFloat(toilet.rating_s, 5);
           let toiletnumvote = parseFloat(toilet.rating_v, 5);
-          let toiletrating = toilettotvote/toiletnumvote;
+          let toiletrating = (toilettotvote/toiletnumvote).toFixed(2);
           return (
             <Marker 
               key={i}

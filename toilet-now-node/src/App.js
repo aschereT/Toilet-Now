@@ -26,9 +26,10 @@ state = {
   currentloading: true
 }
 
-//componentWillUpdate(props){
-//  this.getGeoLocation()
-//}
+componentWillUpdate(props){
+  this.getGeoLocation()
+}
+
 
 async componentDidMount(props) {
   // this.getToilets(0,0,0).then(body => {
@@ -39,27 +40,42 @@ async componentDidMount(props) {
   //   console.log("sqlbody has", this.state.sqlbody);
   // })
   this.state.sqlbody = await this.getToilets(0,0,0);
-  this.delayedShowMarker();
-  console.log(this.state.sqldata);
-  this.setState({
-    isMarkerShown: true
-  })
-  setTimeout(() => {
-    this.setState({
-      loading: false
-    })
-  }, 100);
+  this.delayedShowMarker(this, this.finishload);
+  console.log(this.state.currentLatLng.lat);
+  console.log(this.state.currentLatLng.lng);
 }
 
-delayedShowMarker = (props) => {
-  this.getGeoLocation();
-  var item = {"ToiletID":"0","latitude":this.state.currentLatLng.lat,"longitude":this.state.currentLatLng.lng,"rating_s":"0","rating_v":"1","extra":"","name":"CURRENT LOCATION"}
+finishload = (props, callback) => {
+  console.log("finishload");
+  console.log(this.state.sqldata);
+    this.setState({
+      isMarkerShown: true,
+      loading: false
+    })
+    if(callback)
+    callback();
+}
+
+delayedShowMarker = (props, callback) => {
+  this.getGeoLocation(this, this.makenewlist);
+  console.log("delaymarker");
+  if(callback)
+    callback();
+}
+
+makenewlist = (props, callback) => {
+  console.log("here");
+  console.log(this.state.sqlbody);
+  var item = {"ToiletID":"0","latitude":this.state.currentLatLng.lat,"longitude":this.state.currentLatLng.lng,"rating_s":"0","rating_v":"1","extra":"","name":"CURRENT LOCATION"};
   this.setState({
     sqldata: [
       ...this.state.sqlbody.data,
       item
     ]
-  })
+  });
+  
+  if(callback)
+    callback();
 }
 
 handleMarkerClick = (props) => {
@@ -67,21 +83,28 @@ handleMarkerClick = (props) => {
   this.delayedShowMarker()
 }
 
-getGeoLocation = (props) => {
+getGeoLocation = (props, callback) => {
   if (navigator.geolocation) {
     console.log("got location");
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const {latitudes, longitudes} = position.coords;
+    navigator.geolocation.getCurrentPosition( position => {
+        const latitudess = position.coords.latitude;
+        const longitudess = position.coords.longitude;
         this.setState({
-            currentLatlng: {lat: latitudes, lng: longitudes}
-          }
-        )
+            currentLatLng: {
+              lat: latitudess, 
+              lng: longitudess
+            }
+          })
       }
     )
   }
   else {
     console.log("error no location");
+  }
+
+  if(callback){
+    console.log("callback")
+    callback();
   }
 }
 
@@ -149,71 +172,4 @@ export default App;
 
 /*
 
-async componentDidMount(props) {
-  // this.getToilets(0,0,0).then(body => {
-  //   console.log("Called backend API, got ", body);
-  //   //console.log("Called backend API, got ", JSON.stringify(body));
-
-  //   this.state.sqlbody = body.data;
-  //   console.log("sqlbody has", this.state.sqlbody);
-  // })
-  this.state.sqlbody = await this.getToilets(0,0,0);
-  this.delayedShowMarker(this.finishload);
-}
-
-finishload = (props, callback) => {
-  console.log(this.state.sqldata);
-    this.setState({
-      isMarkerShown: true,
-      loading: false
-    })
-    if(callback)
-    callback();
-}
-
-delayedShowMarker = (props, callback) => {
-  this.getGeoLocation(this.makenewlist(callback));
-  console.log(this.sqldata);
-  if(callback)
-    callback();
-}
-
-makenewlist = (props, callback) => {
-  console.log("here");
-  var item = {"ToiletID":"0","latitude":this.state.currentLatLng.lat,"longitude":this.state.currentLatLng.lng,"rating_s":"0","rating_v":"1","extra":"","name":"CURRENT LOCATION"};
-  this.setState({
-    sqldata: [
-      ...this.state.sqlbody.data,
-      item
-    ]
-  });
-  
-  if(callback)
-    callback();
-}
-
-handleMarkerClick = (props) => {
-  this.setState({ isMarkerShown: false })
-  this.delayedShowMarker()
-}
-
-getGeoLocation = (props, callback) => {
-  if (navigator.geolocation) {
-    console.log("got location");
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const {latitudes, longitudes} = position.coords;
-        this.setState({
-            currentLatlng: {lat: latitudes, lng: longitudes}
-          }
-        )
-      }
-    )
-  }
-  else {
-    console.log("error no location");
-  }
-  if(callback)
-    callback();
-}
 */
