@@ -14,6 +14,8 @@ class App extends Component {
 //lat: 49.262259,
 //lng: -123.245229
 
+
+
 state = {
   currentLatLng: {
     lat: 49.262259,
@@ -83,29 +85,29 @@ handleMarkerClick = (props) => {
   this.delayedShowMarker()
 }
 
-getGeoLocation = (props, callback) => {
-  if (navigator.geolocation) {
-    console.log("got location");
-    navigator.geolocation.getCurrentPosition( position => {
-        const latitudess = position.coords.latitude;
-        const longitudess = position.coords.longitude;
-        this.setState({
-            currentLatLng: {
-              lat: latitudess, 
-              lng: longitudess
-            }
+getGeoLocation = (props, callback) => { 
+  //let promise1 = new Promise(function (resolve, reject) {
+    if (navigator.geolocation) {
+      console.log("got location");
+        navigator.geolocation.getCurrentPosition( position => {
+          const latitudess = position.coords.latitude;
+          const longitudess = position.coords.longitude;
+          this.setState({
+              currentLatLng: {
+                lat: latitudess, 
+                lng: longitudess
+              }
           })
-      }
-    )
-  }
-  else {
-    console.log("error no location");
-  }
-
-  if(callback){
-    console.log("callback")
-    callback();
-  }
+          //resolve("ay");
+        })
+    }
+  //});
+  //promise1.then(function() {
+    if(callback){
+      console.log("callback")
+      callback();
+    }
+  //})
 }
 
 //Calls the backend API
@@ -170,6 +172,3 @@ getToilets = async (lat, lon, range) => {
 }
 export default App;
 
-/*
-
-*/

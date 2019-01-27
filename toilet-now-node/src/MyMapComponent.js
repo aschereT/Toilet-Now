@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
+import './App.css';
 import { compose, withProps, withStateHandlers, mapPropsStream } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
+
+var distance = require ('google-distance-matrix');
+
+distance.key('AIzaSyAeDHMR-tD21TLn7jwgxndy3sSdgICW48g');
+distance.units('imperial');
+var origin = ["49.262259,-123.245229"];
+var originmath = [49.262259,-123.245229];
+
+function deg2rad(deg){
+  return deg*(Math.PI/180);
+}
 
 const MyMapComponent = compose(
     withProps({
@@ -39,6 +51,19 @@ const MyMapComponent = compose(
           let toilettotvote = parseFloat(toilet.rating_s, 5);
           let toiletnumvote = parseFloat(toilet.rating_v, 5);
           let toiletrating = (toilettotvote/toiletnumvote).toFixed(2);
+          let toiletloc = [toiletlat.toString() + ","+toiletlng.toString()]
+          var R = 6371e3;
+          var dLat = deg2rad(toiletlat - originmath[0]);
+          var dLon = deg2rad(toiletlng - originmath[1]);
+          var a = 
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(deg2rad(originmath[0])) * Math.cos(deg2rad(toiletlat)) * 
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+          ; 
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+          var toiletdistance = (R * c).toFixed(2);
+          
+
           return (
             <Marker 
               key={i}
@@ -48,8 +73,11 @@ const MyMapComponent = compose(
             {props.infoWindows[i].isOpen && (
               <infoWindow onCloseClick={props.onToggleOpen.bind(i)}>
                 <div>Location: {toilet.name}</div>
-                <div>Genders: {toilet.extra}</div>
-                <div>Rating: {toiletrating}</div>
+                <div class="notcurrloc">
+                Genders: {toilet.extra}
+                </div>
+                <div class="notcurrloc">Rating: {toiletrating}</div>
+                <div class="notcurrloc">Distance: {toiletdistance} Meters</div>
               </infoWindow>
             )}
             </Marker>
