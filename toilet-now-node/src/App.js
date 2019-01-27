@@ -33,7 +33,27 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
+            <p>Click the button to get your location, and we'll do the rest!.</p>
+            <button onclick="getLocation()">CLICK ME</button>
           </p>
+          
+          <script>
+            var x = document.getElementById("demo");
+
+            function getLocation() {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(showPosition);
+                } else { 
+                x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+            }
+
+            function showPosition(position) {
+              x.innerHTML = "Latitude: " + position.coords.latitude + 
+              "<br>Longitude: " + position.coords.longitude;
+            }
+          </script>
+
           <a
             className="App-link"
             href="https://reactjs.org"
