@@ -32,6 +32,10 @@ sql.connect(config).then(pool => {
 
     // this is our get method
     // this method fetches all available data in our database
+    // Requires 3 parameters in request:
+    //lat: the latitude of the user
+    //lon: the longitude of the user
+    //range: radius (in metres) in which toilets should be considered
     router.get("/getToilets", (req, res) => {
         const { lat, lon, range } = req.body;
         console.log("Lat is " + lat + ", lon is " + lon + ", range is " + range)
@@ -40,8 +44,8 @@ sql.connect(config).then(pool => {
         //and send it back to the client
         //TODO: actually filter
         const result = pool.request().query(`select * from toilets`).then(result => {
-            console.log("Result from DB is " + result.recordsets)
-            return res.json({ success: true, data: result.recordsets });
+            //console.log("Result from DB is " + result.recordsets)
+            return res.json({ success: true, data: result.recordsets[0] });
         }).catch(err => {
             console.log("Failed to query database, " + err)
             return res.json({ success: false, error: err });
